@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Qpay_Core.Models.ExternalAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Qpay_Core.Models
 {
-    public class NonceRequestModel
+    public class NonceRequestModel:BaseRequestModel
     {
-        public string ShopNo { get; set; }  //NA0249_001
+        
     }
 
     public class NonceResponseModel

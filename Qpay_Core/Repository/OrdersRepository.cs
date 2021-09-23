@@ -18,26 +18,26 @@ namespace Qpay_Core.Repository
             _httpClientFactory = httpClientFactory;
         }
 
-        [HttpPost]
-        [Route("create")]
-        public async Task<IActionResult> Post(Todos newTodos)
-        {
-            var newTodosJson = JsonSerializer.Serialize<Todos>(newTodos);
+        //[HttpPost]
+        //[Route("create")]
+        //public async Task<IActionResult> Post(Todos newTodos)
+        //{
+        //    var newTodosJson = JsonSerializer.Serialize<Todos>(newTodos);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://jsonplaceholder.typicode.com/users/1/todos");
+        //    var request = new HttpRequestMessage(HttpMethod.Post, "https://jsonplaceholder.typicode.com/users/1/todos");
 
-            request.Content = new StringContent(newTodosJson, Encoding.UTF8, "application/json");
+        //    request.Content = new StringContent(newTodosJson, Encoding.UTF8, "application/json");
 
-            var httpClient = _httpClientFactory.CreateClient();
+        //    var httpClient = _httpClientFactory.CreateClient();
 
-            var response = await httpClient.SendAsync(request);
+        //    var response = await httpClient.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return Ok(new { Message = "Failed" });
-            }
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return Ok(new { Message = "Failed" });
+        //    }
 
-            return Ok(new { Message = "Success" });
-        }
+        //    return Ok(new { Message = "Success" });
+        //}
     }
 }

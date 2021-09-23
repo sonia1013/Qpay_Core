@@ -1,8 +1,9 @@
 using System;
 
+
 namespace Qpay_Core.Models
 {
-	public class OrderAPIRequestModel
+	public class OrderCreateRequestModel
     {
         public string ShopNo { get; set; }  //"NA0249_001"
         public string OrderNo { get; set; } //"A202109170001"
