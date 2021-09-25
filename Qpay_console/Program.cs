@@ -4,8 +4,11 @@ using System.Security.Cryptography;
 using System.Globalization;
 using System.Numerics;
 using Qpay_Core.Models;
+using Qpay_Core.Services.Common;
 using Newtonsoft.Json;
 using static System.Net.WebRequestMethods;
+using Sinopac.Shioaji;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Qpay_console
 {
@@ -29,19 +32,24 @@ namespace Qpay_console
             string hash_str = GetHashParams();
 
             string sign = hash_str + nonce + HashID;
-            string result = string.Empty;
+            string result = SHA256_Hash.GetSHA256Hash(sign).ToUpper();
 
-            using(SHA256 sha256Hash = SHA256.Create())
-            {
-                string hash = GetHash(sha256Hash, sign);
-                result = hash;
-            }
+            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
+            string IV = hashed_nonce.Remove(0, 48);
+            //var atmParam = new ATMParam() { ExpireDate = "20180502"};
+            var model = new OrderCreateRequestModel() { ShopNo = "BA0026_001", OrderNo = "A201804270001", Amount = 50000, CurrencyID = "TWD", PayType = "A", PrdtName = "虛擬帳號訂單"};
 
+            string jsonStr = JsonConvert.SerializeObject(model);
 
-            Console.WriteLine(result.ToUpper());
+            string msg = GetMessage(HashID, jsonStr, IV);
+            string test2 = AesCBC_Encrypt.EncryptAesCBC(jsonStr, HashID, IV);
+
+            //Console.WriteLine(msg);
+            //Console.WriteLine(IV);
 
             string correct_Sign = "A3EAEE3B361B7E7E9B0F6422B954ECA5D54CEC6EAB0880CB484AA6FDA4154331";
-            if (result.ToUpper() == correct_Sign)
+            //if (result.ToUpper() == correct_Sign)
+            if(msg==test2)
                 Console.WriteLine(true);
             else
                 Console.WriteLine(false);
@@ -63,15 +71,6 @@ namespace Qpay_console
             return (value1 + value2).ToUpper();
         }
 
-        //private static string Base64Encode(string str)
-        //{
-        //    return System.Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
-        //}
-        //private static string Base64Decode(string str)
-        //{
-        //    return Encoding.UTF8.GetString(Convert.FromBase64String(str));
-        //}
-
         public static string GetHashParams()
         {
             //string json = Newtonsoft.Json.JsonConvert.SerializeObject(model);
@@ -81,38 +80,9 @@ namespace Qpay_console
             return result;
         }
 
-        /// <summary>
-        /// SHA256雜湊
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        //public static string Get_SHA256_Hash(string input)
-        //{
-        //    using var hash = SHA256.Create();
-        //    var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-        //    return Convert.ToHexString(byteArray).ToLower();
-        //}
-
-        private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+        public static string GetMessage(string hashId,string data,string iv)
         {
-
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            var sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
+            return AesCBC_Encrypt.AESEncrypt(data, hashId, iv);
         }
-
     }
 }

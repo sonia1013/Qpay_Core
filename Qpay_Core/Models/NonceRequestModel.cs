@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Qpay_Core.Models
 {
-    public class NonceRequestModel:BaseRequestModel
+    public class NonceRequestModel
     {
-        
+        public string ShopNo { get; set; }
     }
 
-    public class NonceResponseModel
+    public class NonceResModel
     {
         public string Nonce { get; set; }  //NA0249_001
     }

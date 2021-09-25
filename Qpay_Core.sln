@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qpay_Core", "Qpay_Core\Qpay_Core.csproj", "{00E539C8-E5F3-4CDE-8C6E-B7608E060B92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qpay_console", "Qpay_console\Qpay_console.csproj", "{0EB3AF08-62AD-4091-BD99-B64E75DA2679}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qpay_console", "Qpay_console\Qpay_console.csproj", "{0EB3AF08-62AD-4091-BD99-B64E75DA2679}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qpay_Test", "Qpay_Test\Qpay_Test.csproj", "{C16A9357-87FF-4AC4-891E-BF20F9AC9032}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00E539C8-E5F3-4CDE-8C6E-B7608E060B92} = {00E539C8-E5F3-4CDE-8C6E-B7608E060B92}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{0EB3AF08-62AD-4091-BD99-B64E75DA2679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB3AF08-62AD-4091-BD99-B64E75DA2679}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EB3AF08-62AD-4091-BD99-B64E75DA2679}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C16A9357-87FF-4AC4-891E-BF20F9AC9032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C16A9357-87FF-4AC4-891E-BF20F9AC9032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C16A9357-87FF-4AC4-891E-BF20F9AC9032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C16A9357-87FF-4AC4-891E-BF20F9AC9032}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

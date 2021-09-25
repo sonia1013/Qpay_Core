@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Qpay_Core.Data;
+using Qpay_Core.Repository;
+using Qpay_Core.Repository.Interfaces;
+using Qpay_Core.Services.Interfaces;
+using Qpay_Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +36,15 @@ namespace Qpay_Core
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddControllers();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddHttpClient();
+            //funBizApi
+            //https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/
 
-            //https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/Order //Nonce
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IQpayRepository, QpayRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
