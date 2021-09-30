@@ -23,24 +23,29 @@ namespace Qpay_Core.Services
     {
         private readonly ILogger<OrderService> _logger;
         private readonly IQpayRepository _qPayRepository;
+        
 
         public OrderService(ILogger<OrderService> logger, IQpayRepository qPayRepository)
         {
             _qPayRepository = qPayRepository;
+            
         }
 
-        public async Task<BaseResponseModel> OrderCreateAsync(OrderCreateRequestModel orderCreateReq)
+        //public async Task<BaseResponseModel> OrderCreateAsync(OrderCreateRequestModel request)
+        public async Task<BaseResponseModel> OrderCreateAsync<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel
         {
-            var request = new OrderCreateRequestModel()
-            {
-                ShopNo = "NA0249_001",
-                OrderNo = "A202109170001",
-                Amount = 50000,
-                CurrencyID = "TWD",
-                PayType = "A",
-                ATMParam = new ATMParam() { ExpireDate = "20210930" },
-                PrdtName = "baby kimchi",
-            };
+            DateTime dateTime = DateTime.Now;
+            string timeStr = dateTime.ToString("yyyymmddhhmm");
+            //var request = new OrderCreateRequestModel()
+            //{
+            //    ShopNo = "NA0249_001",
+            //    OrderNo = "A"+timeStr,
+            //    Amount = 50000,
+            //    CurrencyID = "TWD",
+            //    PayType = "A",
+            //    ATMParam = new ATMParam() { ExpireDate = "20210930" },
+            //    PrdtName = "baby kimchi",
+            //};
 
             string shopNo = request.ShopNo;
             NonceRequestModel nonceReq = new NonceRequestModel() { ShopNo = shopNo };
@@ -50,7 +55,7 @@ namespace Qpay_Core.Services
                 throw new Exception("Nonce值為null或空值");
             //取得HashID
             string hashId = SignService.GetHashID();
-            string jsonData = JsonConvert.SerializeObject(orderCreateReq);
+            string jsonData = JsonConvert.SerializeObject(request);
 
             //計算IV
             string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
@@ -62,7 +67,7 @@ namespace Qpay_Core.Services
             BaseRequestModel req = new BaseRequestModel()
             {
                 //Version = _currentVersion,
-                ShopNo = shopNo,
+                //ShopNo = shopNo,
                 APIService = APIService.OrderCreate,
                 Nonce = nonce,
                 Message = message,
@@ -71,13 +76,13 @@ namespace Qpay_Core.Services
             };
             try
             {
-                //_logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Request:{1}", req.APIService, QPayCommon.SerializeToJson(req)));
+                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Request:{1}", req.APIService, req.Message));
 
                 //呼叫商業收付Web API
                 var result = await _qPayRepository.CreateApiAsync("Order", req);
 
-                //_logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Response:{1}", req.APIService, QPayCommon.SerializeToJson(result)));
-                string decodedMsg = AesCBC_Encrypt.AESDecrypt(result.Message, hashId, result.Nonce);
+                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Response:{1}", req.APIService, result.Message));
+                string decodedMsg = AesCBC_Encrypt.DecryptAesCBC(result.Message, hashId, result.Nonce);
 
                 _logger.LogInformation("Response Message:" + decodedMsg);
 

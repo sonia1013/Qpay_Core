@@ -83,6 +83,39 @@ namespace Qpay_Core.Services.Common
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
 
+        /// <summary>
+        /// AES CBC解密
+        /// </summary>
+        /// <param name="cipherText"></param>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
+        public static string DecryptAesCBC(string cipherText, string key, string iv)
+        {
+            byte[] dataByteArray = new byte[cipherText.Length / 2];
+            for (int x = 0; x < cipherText.Length / 2; x++)
+            {
+                int i = (Convert.ToInt32(cipherText.Substring(x * 2, 2), 16));
+                dataByteArray[x] = (byte)i;
+            }
+
+            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
+            byte[] keyB = Encoding.ASCII.GetBytes(key);
+            byte[] ivB = Encoding.ASCII.GetBytes(iv);
+            aes.Key = keyB;
+            aes.IV = ivB;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(dataByteArray, 0, dataByteArray.Length);
+                    cs.FlushFinalBlock();
+
+                    return Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
+        }
 
     }
 }

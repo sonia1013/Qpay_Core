@@ -15,7 +15,7 @@ namespace Qpay_Core.Models.ExternalAPI
         /// <summary>
         /// 商家註冊編號，例如AA0001_001
         /// </summary>
-        public string ShopNo { get; set; }  //NA0249_001
+        public string ShopNo { get; } = "NA0249_001";
         public APIService APIService { get; set; }
         /// <summary>
         /// 一次性數值
@@ -38,30 +38,55 @@ namespace Qpay_Core.Models.ExternalAPI
         /// <summary>
         /// 商家註冊編號，例如AA0001_001
         /// </summary>
-        public string ShopNo { get; set; }  //NA0249_001
+        public string ShopNo { get; }= "NA0249_001";
         public APIService APIService { get; set; }
-        /// <summary>
-        /// 簽章值
-        /// </summary>
-        public string Sign { get; set; }
         /// <summary>
         /// 一次性數值
         /// </summary>
         public string Nonce { get; set; }
+        /// <summary>
+        /// 簽章值
+        /// </summary>
+        public string Sign { get; set; }
+
         public string Message { get; set; } //(交易訊息內文+HashID+IV)=>AES-CBC
     }
 
-    public class OrderPayQueryRequest:BaseRequestModel
+    public class OrderPayQueryReq:BaseRequestModel
     {
-        public string PayToken { get; set; }  //
+        //public string ShopNo { get; set; }
+        public string PayToken { get; set; }
     }
 
-    public class OrderPayQueryResponse:BaseResponseModel
+    public class OrderPayQueryRes:BaseResponseModel
+    {
+        //public string ShopNo { get; set; }
+        public string PayToken { get; set; }
+        public DateTime Date { get; set; }
+        public string Status { get; set; }  // S or F
+        public string Description { get; set; }
+    }
+
+    public class OrderCreateReq : BaseRequestModel
+    {
+
+    }
+
+    public class OrderCreateRes : BaseResponseModel
+    {
+
+    }
+
+    public class OrderQueryReq : BaseRequestModel
+    {
+        public string PayToken { get; set; }
+    }
+
+    public class OrderQueryRes : BaseResponseModel
     {
         public string PayToken { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
-        //-......................~~~~~共有22個
     }
 
     /// <summary>

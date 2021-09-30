@@ -7,11 +7,12 @@ namespace Qpay_Core.Models
         public string OrderNo { get; set; } //"A202109170001"
         public decimal Amount { get; set; } //1314
         public string CurrencyID { get; set; }  //TWD
-        public string PayType { get; set; } //A:µêÀÀ±b¸¹(AtmPayNo.WebAtmURL.OtpURL¥²¶ñ) //C:«H¥Î¥d(CardPayURL¥²¶ñ)
+        public string PayType { get; set; } //A:ï¿½ï¿½ï¿½ï¿½ï¿½bï¿½ï¿½(AtmPayNo.WebAtmURL.OtpURLï¿½ï¿½ï¿½ï¿½) //C:ï¿½Hï¿½Î¥d(CardPayURLï¿½ï¿½ï¿½ï¿½)
         public ATMParam ATMParam { get; set; }      //PayType==A Required
         public CardParam CardParam { get; set; }    //PayType==C Required
         public ConvStoreParam ConvStoreParam { get; set; }
-        public string PrdtName { get; set; }    //µêÀÀ±b¸¹­q³æ or «H¥Î¥d­q³æ
+        public string PrdtName { get; set; }    //ï¿½ï¿½ï¿½ï¿½ï¿½bï¿½ï¿½ï¿½qï¿½ï¿½ or ï¿½Hï¿½Î¥dï¿½qï¿½ï¿½
+        public string Memo { get; set; }    
         public string ReturnURL { get; } ="http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
         public string BackendURL { get; } = "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
 
@@ -23,8 +24,10 @@ namespace Qpay_Core.Models
         public string AtmPayNo { get; set; }
         public string WebAtmURL { get; set; }
         public string OtpURL { get; set; }
+        public string BankNo { get; set; }
+        public string AcctNo { get; set; }
 
-        public string ExpireDate { get; set; }  //À³¸Ó¯à§ï¥Îshort datetime
+        //public string ExpireDate { get; set; }  //ï¿½ï¿½ï¿½Ó¯ï¿½ï¿½ï¿½short datetime
     }
 
     public class CardParam
@@ -32,43 +35,44 @@ namespace Qpay_Core.Models
         //public string CardPayURL { get; set; }
 
         /// <summary>
-        /// ¦Û°Ê½Ð´Ú(«H¥Î¥d)
+        /// ï¿½Û°Ê½Ð´ï¿½(ï¿½Hï¿½Î¥d)
         /// </summary>
         public string AutoBilling { get; set; }
 
         /// <summary>
-        /// ¹w­p¦Û°Ê½Ð´Ú¤Ñ¼Æ
+        /// ï¿½wï¿½pï¿½Û°Ê½Ð´Ú¤Ñ¼ï¿½
         /// </summary>
         public int? ExpBillingDays { get; set; }
 
         /// <summary>
-        /// ­q³æ¦³®Ä®É¶¡(¤ÀÄÁ)
+        /// ï¿½qï¿½æ¦³ï¿½Ä®É¶ï¿½(ï¿½ï¿½ï¿½ï¿½)
         /// </summary>
         public int? ExpMinutes { get; set; }
 
         /// <summary>
-        /// ¦¬´Ú¤è¦¡-¤l¶µ
+        /// ï¿½ï¿½ï¿½Ú¤è¦¡-ï¿½lï¿½ï¿½
         /// </summary>
         public string PayTypeSub { get; set; }
 
         /// <summary>
-        /// ´Á¼Æ
+        /// ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public string Staging { get; set; }
 
         /// <summary>
-        /// §Ö³t¥I´Ú Token
+        /// ï¿½Ö³tï¿½Iï¿½ï¿½ Token
         /// </summary>
         public string CCToken { get; set; }
     }
 
     public class ConvStoreParam
     {
-        //«ÝÄò
+        //ï¿½ï¿½ï¿½ï¿½
     }
 
-    public class OrderCreateResponseModel
+    public class OrderCreateResponseModel:OrderCreateRequestModel
     {
-
+        public string TSNo { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -25,6 +25,14 @@ namespace Qpay_Core.Services
             return SHA256_Hash.GetSHA256Hash(sign).ToUpper();
         }
 
+        internal static string GetSign<TReq>(string nonce, TReq request) where TReq : BaseRequestModel
+        {
+            string data = SignService.SerializeToJson(request);
+            string hashId = GetHashID();
+            string sign = data + nonce + hashId;
+            return SHA256_Hash.GetSHA256Hash(sign).ToUpper();
+        }
+
         public static string GetHashID()
         {
             string A1 = "4D9709D699CA40EE";
@@ -46,11 +54,6 @@ namespace Qpay_Core.Services
             return hexResult;
         }
 
-        //internal static string GenerateParams(OrderCreateRequestModel request)
-        //{
-
-        //    throw new NotImplementedException();
-        //}
 
         public static string SerializeToJson<T>(this T data)
         {
@@ -58,5 +61,7 @@ namespace Qpay_Core.Services
             string result = JsonConvert.SerializeObject(data, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
             return result;
         }
+
+
     }
 }

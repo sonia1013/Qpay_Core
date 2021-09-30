@@ -73,8 +73,7 @@ namespace Qpay_Core.Repository
                     }
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        //logger.Error($"Get nonce failed. StatusCode , HttpStatusCode:{response.StatusCode}, result:{result}");
-                        result = new BaseResponseModel();
+                        _logger.LogError($"Get nonce failed. StatusCode , HttpStatusCode:{response.StatusCode}, result:{result}");
                     }
                 }
             }
