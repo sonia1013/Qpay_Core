@@ -30,11 +30,11 @@ namespace Qpay_Core.Controllers
         //}
 
         [HttpPost("CreateOrder")]
-        public async Task<ActionResult<BaseResponseModel>> CreateOrderAsync(OrderCreateRequestModel orderCreate)
+        public async Task<ActionResult<BaseResponseModel>> CreateOrderAsync(OrderCreateReq orderCreate)
         {
             try
             {
-                BaseResponseModel result = await _orderService.OrderCreateAsync(orderCreate, APIService.OrderCreate);
+                BaseResponseModel result = await _orderService.OrderCreate(orderCreate);
                 return result;
             }
             catch(Exception e)
@@ -45,21 +45,21 @@ namespace Qpay_Core.Controllers
         }
 
         [HttpPost("QueryPayOrder")]
-        public async Task<ActionResult<OrderPayQueryReq>> QueryPayStatusAsync(OrderPayQueryReq orderInfo)
+        public async Task<ActionResult<OrderPayQueryRes>> QueryPayStatusAsync(OrderPayQueryReq orderInfo)
         {
-
-            orderInfo = new OrderPayQueryReq()
-            {
-                //ShopNo="",
-                APIService = APIService.OrderPayQuery,
-                Sign = "",
-                Message = "",
-                Nonce = "",
-                PayToken = "",
-            };
+            ////--123456789987654321
+            //orderInfo = new OrderPayQueryReq()
+            //{
+            //    //ShopNo="",
+            //    APIService = APIService.OrderPayQuery,
+            //    Sign = "",
+            //    Message = "",
+            //    Nonce = "",
+            //    PayToken = "",
+            //};
             try
             {
-                OrderPayQueryReq result = await _orderService.OrderCreateAsync(orderInfo, APIService.OrderPayQuery);
+                OrderPayQueryRes result = await _orderService.OrderPayQuery(orderInfo);
                 return result;
             }
             catch (Exception e)
@@ -68,5 +68,7 @@ namespace Qpay_Core.Controllers
                 return StatusCode(500);
             }
         }
+
+
     }
 }

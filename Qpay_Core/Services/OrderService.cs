@@ -23,29 +23,31 @@ namespace Qpay_Core.Services
     {
         private readonly ILogger<OrderService> _logger;
         private readonly IQpayRepository _qPayRepository;
-        
+
 
         public OrderService(ILogger<OrderService> logger, IQpayRepository qPayRepository)
         {
             _qPayRepository = qPayRepository;
-            
+            _logger = logger;
         }
 
-        //public async Task<BaseResponseModel> OrderCreateAsync(OrderCreateRequestModel request)
-        public async Task<BaseResponseModel> OrderCreateAsync<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel
+        //public async Task<BaseResponseModel> GetQPayResponse(OrderCreateRequestModel request)
+        private async Task<TResult> GetQPayResponse<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel    //其實主要是傳入ShopNo
         {
             DateTime dateTime = DateTime.Now;
             string timeStr = dateTime.ToString("yyyymmddhhmm");
-            //var request = new OrderCreateRequestModel()
-            //{
-            //    ShopNo = "NA0249_001",
-            //    OrderNo = "A"+timeStr,
-            //    Amount = 50000,
-            //    CurrencyID = "TWD",
-            //    PayType = "A",
-            //    ATMParam = new ATMParam() { ExpireDate = "20210930" },
-            //    PrdtName = "baby kimchi",
-            //};
+            string decodedMsg = "";
+
+            var orderCreateModel = new OrderCreateRequestModel()
+            {
+                ShopNo = request.ShopNo,
+                OrderNo = "A" + timeStr,
+                Amount = 50000,
+                CurrencyID = "TWD",
+                PayType = "A",
+                //ATMParam = new ATMParam() { ExpireDate = "20210930" },
+                PrdtName = "baby kimchi",
+            };
 
             string shopNo = request.ShopNo;
             NonceRequestModel nonceReq = new NonceRequestModel() { ShopNo = shopNo };
@@ -60,7 +62,7 @@ namespace Qpay_Core.Services
             //計算IV
             string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
             string iv = hashed_nonce.Remove(0, 48);
-            string message = AesCBC_Encrypt.EncryptAesCBC(jsonData, hashId,iv);
+            string message = AesCBC_Encrypt.EncryptAesCBC(jsonData, hashId, iv);
 
 
             //產生WebAPIMessage
@@ -72,7 +74,7 @@ namespace Qpay_Core.Services
                 Nonce = nonce,
                 Message = message,
                 //利用Request物件, AESKey及Nonce組成Sign值
-                Sign = SignService.GetSign(nonce, request)
+                Sign = SignService.GetSign<OrderCreateRequestModel>(orderCreateModel, nonce)
             };
             try
             {
@@ -82,17 +84,18 @@ namespace Qpay_Core.Services
                 var result = await _qPayRepository.CreateApiAsync("Order", req);
 
                 _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Response:{1}", req.APIService, result.Message));
-                string decodedMsg = AesCBC_Encrypt.DecryptAesCBC(result.Message, hashId, result.Nonce);
+                decodedMsg += AesCBC_Encrypt.DecryptAesCBC(result.Message, hashId, result.Nonce);
 
                 _logger.LogInformation("Response Message:" + decodedMsg);
 
-                var innerResult = JsonConvert.DeserializeObject<BaseResponseModel>(decodedMsg);
-          
+                TResult innerResult = JsonConvert.DeserializeObject<TResult>(decodedMsg);
+
                 return innerResult;
             }
             catch (Exception ex)
             {
-                //_logger.LogWarning(null, ex);
+                Console.WriteLine(ex.Message.ToString());
+                //_logger.LogError(null, ex);
                 throw ex;
             }
         }
@@ -112,6 +115,25 @@ namespace Qpay_Core.Services
             //2.取得雜湊的前16碼
             //3.將步驟2結果轉為16進制byte陣列
             //List<byte[]> keyList = apiKeys.ToList().Select(x => Hex.GetBytes(x.Replace("-", "").Substring(0, 16), out i)).ToList();
+        }
+
+
+        public async Task<OrderCreateRes> OrderCreate(OrderCreateReq req)
+        {
+            var result = await GetQPayResponse<OrderCreateReq, OrderCreateRes>(req, APIService.OrderCreate);
+            return result;
+        }
+
+        public async Task<OrderPayQueryRes> OrderPayQuery(OrderPayQueryReq req)
+        {
+            var result = await GetQPayResponse<OrderPayQueryReq, OrderPayQueryRes>(req, APIService.OrderCreate);
+            return result;
+        }
+
+        public async Task<OrderQueryRes> OrderQuery(OrderQueryReq req)
+        {
+            var result = await GetQPayResponse<OrderQueryReq, OrderQueryRes>(req, APIService.OrderCreate);
+            return result;
         }
     }
 }
