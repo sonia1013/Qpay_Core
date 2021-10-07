@@ -85,12 +85,4 @@ namespace Qpay_Core.Repository
         }
     }
 
-    //public class JsonContent : StringContent
-    //{
-    //    public JsonContent(Object obj) : base(JsonConvert.SerializeObject(obj), System.Text.Encoding.UTF8, "application/json")
-    //    {
-
-    //    }
-    //}
-
 }

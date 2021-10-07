@@ -31,14 +31,14 @@ namespace Qpay_Core.Services
             _logger = logger;
         }
 
-        //public async Task<BaseResponseModel> GetQPayResponse(OrderCreateRequestModel request)
+        //public async Task<BaseResponseModel> GetQPayResponse(OrderCreateReqModel request)
         private async Task<TResult> GetQPayResponse<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel    //其實主要是傳入ShopNo
         {
             DateTime dateTime = DateTime.Now;
             string timeStr = dateTime.ToString("yyyymmddhhmm");
             string decodedMsg = "";
 
-            var orderCreateModel = new OrderCreateRequestModel()
+            var orderCreateModel = new OrderCreateReqModel()
             {
                 ShopNo = request.ShopNo,
                 OrderNo = "A" + timeStr,
@@ -62,7 +62,7 @@ namespace Qpay_Core.Services
             //計算IV
             string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
             string iv = hashed_nonce.Remove(0, 48);
-            string message = AesCBC_Encrypt.EncryptAesCBC(jsonData, hashId, iv);
+            string message = AesCBC_Encrypt.AESEncrypt(jsonData, hashId, iv);
 
 
             //產生WebAPIMessage
@@ -74,7 +74,7 @@ namespace Qpay_Core.Services
                 Nonce = nonce,
                 Message = message,
                 //利用Request物件, AESKey及Nonce組成Sign值
-                Sign = SignService.GetSign<OrderCreateRequestModel>(orderCreateModel, nonce)
+                Sign = SignService.GetSign<OrderCreateReqModel>(orderCreateModel, nonce)
             };
             try
             {

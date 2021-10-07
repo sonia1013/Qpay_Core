@@ -1,11 +1,11 @@
 using System;
 namespace Qpay_Core.Models
 {
-	public class OrderCreateRequestModel
+	public class OrderCreateReqModel
     {
         public string ShopNo { get; set; }  //"NA0249_001"
         public string OrderNo { get; set; } //"A202109170001"
-        public decimal Amount { get; set; } //1314
+        public int Amount { get; set; } //1314
         public string CurrencyID { get; set; }  //TWD
         public string PayType { get; set; } //A:�����b��(AtmPayNo.WebAtmURL.OtpURL����) //C:�H�Υd(CardPayURL����)
         public ATMParam ATMParam { get; set; }      //PayType==A Required
@@ -27,7 +27,7 @@ namespace Qpay_Core.Models
         public string BankNo { get; set; }
         public string AcctNo { get; set; }
 
-        //public string ExpireDate { get; set; }  //���ӯ���short datetime
+        public string ExpireDate { get; set; }  //���ӯ���short datetime
     }
 
     public class CardParam
@@ -70,7 +70,7 @@ namespace Qpay_Core.Models
         //����
     }
 
-    public class OrderCreateResponseModel:OrderCreateRequestModel
+    public class OrderCreateResponseModel:OrderCreateReqModel
     {
         public string TSNo { get; set; }
         public string Status { get; set; }

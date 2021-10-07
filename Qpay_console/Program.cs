@@ -22,27 +22,35 @@ namespace Qpay_console
             //string nonce = "";
             string Hash = "AF9F1EB8E157870C74928EE44A6B89F3D64AA9A584FF3373DB4C4B2A7DA46476";
             string IV = "DB4C4B2A7DA46476";
-            string output = AesCBC_Encrypt.AESDecrypt(msg, Hash, IV);
-            Console.WriteLine(output);
-            Console.ReadLine();
+
+            string A1 = "65960834240E44B7"; //NEQ5NzA5RDY5OUNBNDBFRQ==
+            string A2 = "2831076A098E49E7";
+            string B1 = "CB1AFFBF915A492B";
+            string B2 = "7F242C0AA612454F";
+
+            //string output = AesCBC_Encrypt.AESDecrypt(msg, Hash, IV);
+            
             //string A1 = "4D9709D699CA40EE"; //NEQ5NzA5RDY5OUNBNDBFRQ==
             //string A2 = "5A4FEF83140C4E9E";
             //string B1 = "BC74301945134CB4";
             //string B2 = "961F67F8FCA44AB9";
 
-            //string temp1 = GetXORencrypt(A1, A2);
-            //string temp2 = GetXORencrypt(B1, B2);
+            string temp1 = GetXORencrypt(A1, A2);
+            string temp2 = GetXORencrypt(B1, B2);
 
-            //string HashID = GetHashID(temp1, temp2);
+            string HashID = GetHashID(temp1, temp2);
             //string hash_str = GetHashParams();
 
+
+            Console.WriteLine(HashID);
+            Console.ReadLine();
             //string sign = hash_str + nonce + HashID;
             //string result = SHA256_Hash.GetSHA256Hash(sign).ToUpper();
 
             //string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
             //string IV = hashed_nonce.Remove(0, 48);
             ////var atmParam = new ATMParam() { ExpireDate = "20180502"};
-            //var model = new OrderCreateRequestModel() { ShopNo = "BA0026_001", OrderNo = "A201804270001", Amount = 50000, CurrencyID = "TWD", PayType = "A", PrdtName = "虛擬帳號訂單"};
+            //var model = new OrderCreateReqModel() { ShopNo = "BA0026_001", OrderNo = "A201804270001", Amount = 50000, CurrencyID = "TWD", PayType = "A", PrdtName = "虛擬帳號訂單"};
 
             //string jsonStr = JsonConvert.SerializeObject(model);
 
@@ -85,9 +93,9 @@ namespace Qpay_console
             return result;
         }
 
-        public static string GetMessage(string hashId,string data,string iv)
-        {
-            return AesCBC_Encrypt.AESEncrypt(data, hashId, iv);
-        }
+        //public static string GetMessage(string hashId, string data, string iv)
+        //{
+        //    return AesCBC_Encrypt.AESEncrypt(data, hashId, iv);
+        //}
     }
 }

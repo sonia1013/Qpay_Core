@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,9 @@ namespace Qpay_Core.Services.Common
         /// <returns></returns>
         public static string GetSHA256Hash(string input)
         {
+            //    using var hash = SHA256.Create();
+            //    var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            //    return Convert.ToHexString(byteArray).ToLower();
             using (SHA256 sha256Hash = SHA256.Create())
             {
                 string hash = GetHash(sha256Hash, input);
@@ -43,12 +48,20 @@ namespace Qpay_Core.Services.Common
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
-    }
 
-    //public static string Get_SHA256_Hash(string input)
-    //{
-    //    using var hash = SHA256.Create();
-    //    var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-    //    return Convert.ToHexString(byteArray).ToLower();
-    //}
+        public static string GetXorResult(string hex1, string hex2)
+        {
+            BigInteger dec1 = BigInteger.Parse(hex1, NumberStyles.HexNumber);
+            BigInteger dec2 = BigInteger.Parse(hex2, NumberStyles.HexNumber);
+            BigInteger result = dec1 ^ dec2;
+            string hexResult = result.ToString("X");
+            return hexResult;
+        }
+
+        public static string GetHashID(string value1, string value2)
+        {
+            return (value1 + value2).ToUpper();
+        }
+
+    }
 }

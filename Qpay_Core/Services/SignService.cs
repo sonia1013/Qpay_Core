@@ -18,7 +18,7 @@ namespace Qpay_Core.Services
 {
     public static class SignService
     {
-        public static string GetSign<T>(this T inputObj,string nonce) where T : OrderCreateRequestModel
+        public static string GetSign<T>(this T inputObj,string nonce) where T : OrderCreateReqModel
         {
             //計算Sign
             //string data = SignService.SerializeToJson(request);
