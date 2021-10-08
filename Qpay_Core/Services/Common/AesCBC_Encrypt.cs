@@ -64,25 +64,25 @@ namespace Qpay_Core.Services.Common
         //}
 
 
-        public static string AESDecrypt(string HexToDecrypt, string key, string iv)
-        {
-            StringBuilder sb = new StringBuilder();
-            byte[] input_Key = UTF8Encoding.UTF8.GetBytes(key);
-            byte[] input_IV = UTF8Encoding.UTF8.GetBytes(iv);
-            byte[] toEncryptArray = Convert.FromBase64String(HexToDecrypt);
-            RijndaelManaged rDel = new RijndaelManaged();
-            rDel.Key = input_Key;
-            rDel.IV = input_IV;
-            rDel.Mode = CipherMode.CBC;
-            rDel.Padding = PaddingMode.Zeros;
-            ICryptoTransform cTransform = rDel.CreateDecryptor();
-            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-            foreach (byte b in resultArray)
-            {
-                sb.AppendFormat("{0:X2}", b);
-            }
-            return sb.ToString();
-        }
+        //public static string AESDecrypt(string HexToDecrypt, string key, string iv)
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    byte[] input_Key = UTF8Encoding.UTF8.GetBytes(key);
+        //    byte[] input_IV = UTF8Encoding.UTF8.GetBytes(iv);
+        //    byte[] toEncryptArray = Convert.FromBase64String(HexToDecrypt);
+        //    RijndaelManaged rDel = new RijndaelManaged();
+        //    rDel.Key = input_Key;
+        //    rDel.IV = input_IV;
+        //    rDel.Mode = CipherMode.CBC;
+        //    rDel.Padding = PaddingMode.Zeros;
+        //    ICryptoTransform cTransform = rDel.CreateDecryptor();
+        //    byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+        //    foreach (byte b in resultArray)
+        //    {
+        //        sb.AppendFormat("{0:X2}", b);
+        //    }
+        //    return sb.ToString();
+        //}
 
         /// <summary>
         /// AES CBC解密
@@ -120,13 +120,20 @@ namespace Qpay_Core.Services.Common
         }
 
 
-        private static byte[] HexToByte(this string hexString)
+        public static byte[] HexToByte(this string hexString)
         {
             byte[] output = new byte[hexString.Length / 2];
-            for (int i = 0; i < hexString.Length; i = i + 2)
+            for (int x = 0; x < hexString.Length; x=x+2)
             {
-                output[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+                string value = hexString.Substring(x * 2, 2);
+                //dataByteArray[x / 2] = Convert.ToByte(hexString.Substring(x, 2), 16);
+                uint i = Convert.ToByte(value, 16);
+                output[x] = (byte)i;
             }
+            //for (int i = 0; i < hexString.Length; i = i + 2)
+            //{
+            //    output[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            //}
             return output;
 
         }

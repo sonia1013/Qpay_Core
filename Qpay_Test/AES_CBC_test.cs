@@ -9,90 +9,70 @@ using System.Numerics;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics.Eventing.Reader;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
+using System.Text;
+using Qpay_Core.Services;
 
 namespace Qpay_Test
 {
     public class Tests
     {
-
+        private readonly static string HashID = "17D8E6558DC60E702A6B57E1B9B7060D";
+        //private readonly string IV = "DB4C4B2A7DA46476";
         [SetUp]
         public void Setup()
         {
-           // Console.WriteLine("測試");
-            //string msg = "8C3CFD579B58FDAC6C1DF8C8EB8B79F49DD533F8D8C5DC181074397D21E7364E26D347DF264C76A59886DEA58F742C068BB66D6918791797B4DC31245E8E621F3791938F0A716AC20BFDC50A268CF9FDAF01149B73F8E5A2D61928AB79E30CA35C7DD55698010FEC071C2628444348C7B628ED4DCEE281234C31617B5441A3C6 4466A824BC8907A2D8571F58C4F780EBBB5D6DD98631A867A807718FDD34833FFB2C72F2731D715A35F1BA145C8D1E656136623FFD60EFDAAB87EF1674EA1BD19868DCBC6552D48D9728AB020E75AA6E7804FB9D7FB4AA7E92F89DFFCFA9D263EE9B043AA7A8DB22ECA894F8D5621BF8E6DF5B250CCA9D1C499EF8896B64617F D9FCF142665EA3A660DC6B7296CFE03C80B6FC96CA5B805ADEE4AF9784FF1A6886FCE42C7FA4575FFF4D3AD302B583D08346DD4F876A7BF2B60D514CA021F62293E960458BF886C6CB746A6EEE0EBB3916EE6B861B32D75CE93F8988215D76DEFEE72F4429B2ED48A5AB8FF04683B409FF8072EB1C5E5162EDC625557328F506 520AE3DBD2C19F6327AA97911BF2789373CE4DBBB6EC52A2EB9263ADAB1767B4FC7646440BA34E3716BC25E81A86FE5EF432E0C8D40A5BC25EDE8E2D1CC56A2C";
-            //string nonce = "NjM2NjA0MzI4ODU1MDcuMzo1MzE5ZWIwNGZjNzZlZGJhOGM5M2U1YTM0Nzk2MGM5NThhZjJiMTFiYjNiYmZmNjk1ZGMzYTFlMTEyMDA0MGU2";
-            //string nonce = "";
-            //string Hash = "AF9F1EB8E157870C74928EE44A6B89F3D64AA9A584FF3373DB4C4B2A7DA46476";
-            //string IV = "DB4C4B2A7DA46476";
 
-            //NEQ5NzA5RDY5OUNBNDBFRQ==
-
-            //string output = AesCBC_Encrypt.AESDecrypt(msg, Hash, IV);
-
-            //string A1 = "4D9709D699CA40EE"; //NEQ5NzA5RDY5OUNBNDBFRQ==
-            //string A2 = "5A4FEF83140C4E9E";
-            //string B1 = "BC74301945134CB4";
-            //string B2 = "961F67F8FCA44AB9";
-
-            //string temp1 = GetXORencrypt(A1, A2);
-            //string temp2 = GetXORencrypt(B1, B2);
-            //
-            //string HashID = GetHashID(temp1, temp2);
-            ////string hash_str = GetHashParams();
-            //
-            //
-            //Console.WriteLine(HashID);
-            //Console.ReadLine();
-            //string sign = hash_str + nonce + HashID;
-            //string result = SHA256_Hash.GetSHA256Hash(sign).ToUpper();
-
-            //string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
-            //string IV = hashed_nonce.Remove(0, 48);
-            ////var atmParam = new ATMParam() { ExpireDate = "20180502"};
-            //var model = new OrderCreateReqModel() { ShopNo = "BA0026_001", OrderNo = "A201804270001", Amount = 50000, CurrencyID = "TWD", PayType = "A", PrdtName = "虛擬帳號訂單"};
-
-            //string jsonStr = JsonConvert.SerializeObject(model);
-
-            //string msg = GetMessage(HashID, jsonStr, IV);
-            //string test2 = AesCBC_Encrypt.EncryptAesCBC(jsonStr, HashID, IV);
-
-            ////Console.WriteLine(msg);
-            ////Console.WriteLine(IV);
-
-            //string correct_Sign = "A3EAEE3B361B7E7E9B0F6422B954ECA5D54CEC6EAB0880CB484AA6FDA4154331";
-            ////if (result.ToUpper() == correct_Sign)
-            //if(msg==test2)
-            //    Console.WriteLine(true);
-            //else
-            //    Console.WriteLine(false);
-
-            //Console.ReadKey();
         }
-
-
 
         [Test]
         public void Input_four_strings_and_return_HashID_is_Matched()
         {
             string Expected = "17D8E6558DC60E702A6B57E1B9B7060D";
-            string a1 = "4D9709D699CA40EE";
-            string a2 = "5A4FEF83140C4E9E";
-            string b1 = "BC74301945134CB4";
-            string b2 = "961F67F8FCA44AB9";
-            string temp1 = SHA256_Hash.GetXorResult(a1, a2);
-            string temp2 = SHA256_Hash.GetXorResult(b1, b2);
+            //string a1 = "4D9709D699CA40EE";
+            //string a2 = "5A4FEF83140C4E9E";
+            //string b1 = "BC74301945134CB4";
+            //string b2 = "961F67F8FCA44AB9";
+            //string temp1 = SHA256_Hash.GetXorResult(a1, a2);
+            //string temp2 = SHA256_Hash.GetXorResult(b1, b2);
 
-            string HashID = SHA256_Hash.GetHashID(temp1, temp2);
+            //string HashID = SHA256_Hash.GetHashID(temp1, temp2);
+
+            QPayCommon.GetHashID();
 
             Assert.AreEqual(Expected, HashID);
         }
 
         [Test]
-        public void Try_Getting_IV_by_Nonce_ShouldNotBeNull()
+        public void Try_Getting_IV_by_Nonce_ShouldBeTheSameAsExpected()
         {
             string Expected = "DB4C4B2A7DA46476";
             string nonce = "NjM2NjA0MzI4ODU1MDcuMzo1MzE5ZWIwNGZjNzZlZGJhOGM5M2U1YTM0Nzk2MGM5NThhZjJiMTFiYjNiYmZmNjk1ZGMzYTFlMTEyMDA0MGU2";
+            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper();
+            string iv = hashed_nonce.Remove(0, 48);
+
+            Assert.AreEqual(Expected, iv);
+        }
+
+        [Test]
+        public static void SignValueShouldBeTheSameAsExpected()
+        {
+            string Expected_Param = "Amount=50000&BackendURL=http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess&CurrencyID=TWD&OrderNo=A201804270001&PayType=A&PrdtName=虛擬帳號訂單&ReturnURL=http://10.11.22.113:8803/QPay.ApiClient/Store/Return&ShopNo=BA0026_001NjM2NjA0MzI4ODIyODguMzo3NzI0ZDg4ZmI5Nzc2YzQ1MTNhYzg2MTk3NDBlYTRhNGU0N2IxM2Q2M2JkMTIwOGU5YzZhMGFmNGY5MjA5YzVm17D8E6558DC60E702A6B57E1B9B7060D";
+            string Expected_Sign = "A3EAEE3B361B7E7E9B0F6422B954ECA5D54CEC6EAB0880CB484AA6FDA4154331";
+            //string nonce = "NjM2NjI2NjM2ODIxOTcuNDo3MGY3YjY1YTQ3Y2ViOGUyNzA4YTY5Yzc3ODVjY2NjNTkwMGU4YzI4YTY4ZWI5NDg4MTdhOTE5NjY3YjhkODA0";
+            string nonce = "NjM2NjA0MzI4ODIyODguMzo3NzI0ZDg4ZmI5Nzc2YzQ1MTNhYzg2MTk3NDBlYTRhNGU0N2IxM2Q2M2JkMTIwOGU5YzZhMGFmNGY5MjA5YzVm";
             
+            //string hash_str = "Amount=50000&BackendURL=http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess&CurrencyID=TWD&OrderNo=A201804270001&PayType=A&PrdtName=虛擬帳號訂單&ReturnURL=http://10.11.22.113:8803/QPay.ApiClient/Store/Return&ShopNo=BA0026_001";
+
+            var model = new OrderCreateReqModel() { ShopNo = "BA0026_001", OrderNo = "A201804270001", Amount = 50000, CurrencyID = "TWD", PayType = "A", PrdtName = "虛擬帳號訂單"};
+            string resultSign = SignService.GetSign<OrderCreateReqModel>(model,nonce);
+            string hash_str = SignService.GetSigningString<OrderCreateReqModel>(model);
+            string jsonStr = hash_str + nonce + HashID;
+            
+            //string result = SHA256_Hash.GetSHA256Hash(sign);
+            //if (result.ToUpper() == correct_Sign)
+            Assert.AreEqual(Expected_Param, jsonStr);
+            Assert.AreEqual(Expected_Sign, resultSign);
         }
 
         [Test]
@@ -105,7 +85,7 @@ namespace Qpay_Test
             string IV = "CB6FA68E42B655AB";
             var jsonReq = new OrderCreateReqModel()
             {
-                ShopNo = "BA2206_001",
+                ShopNo = "BA0026_001",
                 OrderNo = "A201804270001",
                 Amount = 50000,
                 CurrencyID = "TWD",
@@ -113,27 +93,72 @@ namespace Qpay_Test
                 CardParam = null,
                 PrdtName = "虛擬帳號訂單",
             };
-            string strReq = Newtonsoft.Json.JsonConvert.SerializeObject(jsonReq);
-            string result = AesCBC_Encrypt.AESEncrypt(strReq.Replace("null",""), HashId, IV);
+            string strReq = JsonConvert.SerializeObject(jsonReq);
+            string result = AesCBC_Encrypt.AESEncrypt(strReq.Replace("null", ""), HashId, IV);
             Assert.AreEqual(Expected, result);
         }
 
-        //[Test]
-        //public static string GetHashParams()
-        //{
-        //    string Expected = "Amount=50000&BackendURL=http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess&CurrencyID=TWD&OrderNo=A201804270001&PayType=A&PrdtName=虛擬帳號訂單&ReturnURL=http://10.11.22.113:8803/QPay.ApiClient/Store/Return&ShopNo=BA0026_001NjM2NjA0MzI4ODIyODguMzo3NzI0ZDg4ZmI5Nzc2YzQ1MTNhYzg2MTk3NDBlYTRhNGU0N2IxM2Q2M2JkMTIwOGU5YzZhMGFmNGY5MjA5YzVm17D8E6558DC60E702A6B57E1B9B7060D";
-        //    //string json = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-
-        //    string result = "Amount=50000&BackendURL=http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess&CurrencyID=TWD&OrderNo=A201804270001&PayType=A&PrdtName=虛擬帳號訂單&ReturnURL=http://10.11.22.113:8803/QPay.ApiClient/Store/Return&ShopNo=BA0026_001";
-
-        //    return result;
-        //}
-
         [Test]
-        public static string TryDecrytedMessageWithAesCBC(string inputStr, string hashId, string iv)
+        public static void TryDecrytedMessageWithAesCBC()
         {
-            //string Expected = "{"OrderNo":"A201804270001","ShopNo":"BA0026_001","TSNo":"BA002600000037","PayType":"A","Amount":50000,"Status":"S","Desc ription":"S0000處理成功","ATMParam":{"AtmPayNo":"99922511001200","WebAtmURL":"http://34.58:7101/QPay.WebPaySite/Bridge/PayWebATM?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed","OtpURL":"http://10.11.34.58:7101/QPay.WebPaySite/Bridge/PayOTP?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed"}}";
-            return AesCBC_Encrypt.AESDecrypt(inputStr, hashId, iv);
+            string inputStr = "8C3CFD579B58FDAC6C1DF8C8EB8B79F49DD533F8D8C5DC181074397D21E7364E26D347DF264C76A59886DEA58F742C068BB66D6918791797B4DC31245E8E621F3791938F0A716AC20BFDC50A268CF9FDAF01149B73F8E5A2D61928AB79E30CA35C7DD55698010FEC071C2628444348C7B628ED4DCEE281234C31617B5441A3C64466A824BC8907A2D8571F58C4F780EBBB5D6DD98631A867A807718FDD34833FFB2C72F2731D715A35F1BA145C8D1E656136623FFD60EFDAAB87EF1674EA1BD19868DCBC6552D48D9728AB020E75AA6E7804FB9D7FB4AA7E92F89DFFCFA9D263EE9B043AA7A8DB22ECA894F8D5621BF8E6DF5B250CCA9D1C499EF8896B64617FD9FCF142665EA3A660DC6B7296CFE03C80B6FC96CA5B805ADEE4AF9784FF1A6886FCE42C7FA4575FFF4D3AD302B583D08346DD4F876A7BF2B60D514CA021F62293E960458BF886C6CB746A6EEE0EBB3916EE6B861B32D75CE93F8988215D76DEFEE72F4429B2ED48A5AB8FF04683B409FF8072EB1C5E5162EDC625557328F506520AE3DBD2C19F6327AA97911BF2789373CE4DBBB6EC52A2EB9263ADAB1767B4FC7646440BA34E3716BC25E81A86FE5EF432E0C8D40A5BC25EDE8E2D1CC56A2C4466A824BC8907A2D8571F58C4F780EBBB5D6DD98631A867A807718FDD34833FFB2C72F2731D715A35F1BA145C8D1E656136623FFD60EFDAAB87EF1674EA1BD19868DCBC6552D48D9728AB020E75AA6E7804FB9D7FB4AA7E92F89DFFCFA9D263EE9B043AA7A8DB22ECA894F8D5621BF8E6DF5B250CCA9D1C499EF8896B64617FD9FCF142665EA3A660DC6B7296CFE03C80B6FC96CA5B805ADEE4AF9784FF1A6886FCE42C7FA4575FFF4D3AD302B583D08346DD4F876A7BF2B60D514CA021F62293E960458BF886C6CB746A6EEE0EBB3916EE6B861B32D75CE93F8988215D76DEFEE72F4429B2ED48A5AB8FF04683B409FF8072EB1C5E5162EDC625557328F506520AE3DBD2C19F6327AA97911BF2789373CE4DBBB6EC52A2EB9263ADAB1767B4FC7646440BA34E3716BC25E81A86FE5EF432E0C8D40A5BC25EDE8E2D1CC56A2C";
+
+            string nonce = "NjM2NjA0MzI4ODU1MDcuMzo1MzE5ZWIwNGZjNzZlZGJhOGM5M2U1YTM0Nzk2MGM5NThhZjJiMTFiYjNiYmZmNjk1ZGMzYTFlMTEyMDA0MGU2";
+            string sign = "24CBD10DC8752BF5AEB55EC930F1D57638312D2BD1A7E3EBF0E45DA78721CF04";
+            string hashId = "17D8E6558DC60E702A6B57E1B9B7060D";
+            //string iv = "DB4C4B2A7DA46476";
+            string iv = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().Remove(0, 48);
+            var jsonReq = new OrderCreateResModel()
+            {
+                ShopNo = "BA0026_001",
+                OrderNo = "A201804270001",
+                Amount = 50000,
+                TSNo = "BA002600000037",
+                PayType = "A",
+                Status = "S",
+                CurrencyID = "TWD",
+                Description = "S0000處理成功",
+                ATMParam = new ATMParam { AtmPayNo = "99922511001200", WebAtmURL = "http://34.58:7101/QPay.WebPaySite/Bridge/PayWebATM?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed", OtpURL = "http://10.11.34.58:7101/QPay.WebPaySite/Bridge/PayOTP?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed" },
+            };
+            string Expected = JsonConvert.SerializeObject(jsonReq);
+            //string Expected = "{"OrderNo":"A201804270001","ShopNo":"BA0026_001","TSNo":"BA002600000037","PayType":"A","Amount":50000,"Status":"S","Description":"S0000處理成功","ATMParam":{"AtmPayNo":"99922511001200","WebAtmURL":"http://34.58:7101/QPay.WebPaySite/Bridge/PayWebATM?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed","OtpURL":"http://10.11.34.58:7101/QPay.WebPaySite/Bridge/PayOTP?TD=BA002600000037&TK=6fecec25daae4b5bb45e80bc9ee6f7ed"}}";
+            //string result =  AesCBC_Encrypt.AESDecrypt(inputStr, hashId, iv);
+            string result = DecryptAesCBC(inputStr, hashId, iv);
+
+            Assert.IsNotNull(result);
+        }
+
+
+        private static string DecryptAesCBC(string hexString, string key, string iv)
+        {
+            //byte[] dataByteArray = new byte[hexString.Length / 2];
+            //for (int x = 0; x < hexString.Length; x=x+2)
+            //{
+            //    string value = hexString.Substring(x * 2, 2);
+            //    Console.WriteLine(value);
+            //    //dataByteArray[x / 2] = Convert.ToByte(hexString.Substring(x, 2), 16);
+            //    uint i = Convert.ToByte(value, 16);
+            //    dataByteArray[x] = (byte)i;
+            //}
+
+            byte[] dataByteArray = AesCBC_Encrypt.HexToByte(hexString);
+
+            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
+            byte[] keyB = Encoding.ASCII.GetBytes(key);
+            byte[] ivB = Encoding.ASCII.GetBytes(iv);
+            aes.Key = keyB;
+            aes.IV = ivB;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(dataByteArray, 0, dataByteArray.Length);
+                    cs.FlushFinalBlock();
+
+                    return Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }
         }
     }
 }

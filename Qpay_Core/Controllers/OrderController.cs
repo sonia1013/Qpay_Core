@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Qpay_Core.Models;
 using Qpay_Core.Models.ExternalAPI;
 using Qpay_Core.Repository.Interfaces;
@@ -15,13 +16,14 @@ namespace Qpay_Core.Controllers
     [Route("[controller]")]
     public class OrderController : Controller
     {
+        private readonly ILogger<OrderController> _logger;
         private readonly IQpayRepository _qPayRepository;
         private readonly IOrderService _orderService;
-        public OrderController(IQpayRepository nonceRepository, IOrderService orderService)
+        public OrderController(IQpayRepository nonceRepository, IOrderService orderService,ILogger<OrderController> logger)
         {
             _qPayRepository = nonceRepository;
             _orderService = orderService;
-
+            _logger = logger;
         }
         
         //public IActionResult Index()
@@ -40,6 +42,7 @@ namespace Qpay_Core.Controllers
             catch(Exception e)
             {
                 //throw e;
+                _logger.LogError(e, $"建立訂單失敗{e.Message}");
                 return StatusCode(500);
             }
         }

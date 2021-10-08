@@ -41,12 +41,13 @@ namespace Qpay_Core.Services
             var orderCreateModel = new OrderCreateReqModel()
             {
                 ShopNo = request.ShopNo,
-                OrderNo = "A" + timeStr,
+                OrderNo = "A" + timeStr, //Get Set 其實改成為唯讀欄位+時間戳記就好了
                 Amount = 50000,
                 CurrencyID = "TWD",
                 PayType = "A",
-                //ATMParam = new ATMParam() { ExpireDate = "20210930" },
-                PrdtName = "baby kimchi",
+                ATMParam = new ATMParam() { ExpireDate = "20211008" },
+                CardParam=null,
+                PrdtName = "虛擬帳號訂單",
             };
 
             string shopNo = request.ShopNo;
@@ -56,13 +57,16 @@ namespace Qpay_Core.Services
             if (string.IsNullOrEmpty(nonce))
                 throw new Exception("Nonce值為null或空值");
             //取得HashID
-            string hashId = SignService.GetHashID();
-            string jsonData = JsonConvert.SerializeObject(request);
+            string hashId = QPayCommon.GetHashID();
+            //string jsonData = JsonConvert.SerializeObject(request);
+            string jsonData = JsonConvert.SerializeObject(orderCreateModel);
 
             //計算IV
-            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper().PadRight(16);
+            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper();
             string iv = hashed_nonce.Remove(0, 48);
-            string message = AesCBC_Encrypt.AESEncrypt(jsonData, hashId, iv);
+
+            //取得加密內文
+            string message = AesCBC_Encrypt.AESEncrypt(jsonData.Replace("null",""), hashId, iv);
 
 
             //產生WebAPIMessage

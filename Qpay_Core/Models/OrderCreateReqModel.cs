@@ -70,9 +70,10 @@ namespace Qpay_Core.Models
         //����
     }
 
-    public class OrderCreateResponseModel:OrderCreateReqModel
+    public class OrderCreateResModel:OrderCreateReqModel
     {
         public string TSNo { get; set; }
         public string Status { get; set; }
+        public string Description { get; set; }
     }
 }

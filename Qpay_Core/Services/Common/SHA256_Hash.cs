@@ -42,7 +42,7 @@ namespace Qpay_Core.Services.Common
             // and format each one as a hexadecimal string.
             for (int i = 0; i < data.Length; i++)
             {
-                sBuilder.Append(data[i].ToString("x2"));
+                sBuilder.Append(data[i].ToString("X2"));
             }
 
             // Return the hexadecimal string.
