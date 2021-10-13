@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Qpay_Core.Models;
+using Qpay_Core.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,6 +13,7 @@ namespace Qpay_Core.Services.Common
 {
     public static class QPayCommon
     {
+
         public static string GetHashID()
         {
             string A1 = "4D9709D699CA40EE";
@@ -36,6 +40,17 @@ namespace Qpay_Core.Services.Common
             //value為null或空值則不序列化(空值則需在property上加attribute)
             string result = JsonConvert.SerializeObject(data, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
             return result;
+        }
+
+        /// <summary>
+        /// 計算IV值-
+        /// </summary>
+        /// <param name="nonce"></param>
+        /// <returns></returns>
+        public static string CalculateIVbyNonce(string nonce)
+        {
+            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper();
+            return hashed_nonce.Remove(0, 48);
         }
 
     }

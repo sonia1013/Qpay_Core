@@ -38,7 +38,7 @@ namespace Qpay_Core.Services
             string timeStr = dateTime.ToString("yyyymmddhhmm");
             string decodedMsg = "";
 
-            var orderCreateModel = new OrderCreateReqModel()
+            var qPayRequest = new OrderCreateReqModel()
             {
                 ShopNo = request.ShopNo,
                 OrderNo = "A" + timeStr, //Get Set 其實改成為唯讀欄位+時間戳記就好了
@@ -50,44 +50,54 @@ namespace Qpay_Core.Services
                 PrdtName = "虛擬帳號訂單",
             };
 
+            //取得nonce值
             string shopNo = request.ShopNo;
             NonceRequestModel nonceReq = new NonceRequestModel() { ShopNo = shopNo };
             string nonce = await _qPayRepository.CreateNonceAsync(nonceReq);
 
             if (string.IsNullOrEmpty(nonce))
                 throw new Exception("Nonce值為null或空值");
+
             //取得HashID
             string hashId = QPayCommon.GetHashID();
-            //string jsonData = JsonConvert.SerializeObject(request);
-            string jsonData = JsonConvert.SerializeObject(orderCreateModel);
 
             //計算IV
-            string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper();
-            string iv = hashed_nonce.Remove(0, 48);
+            string iv = QPayCommon.CalculateIVbyNonce(nonce);
+            //string hashed_nonce = SHA256_Hash.GetSHA256Hash(nonce).ToUpper();
+            //string iv = hashed_nonce.Remove(0, 48);
 
+            string jsonData = JsonConvert.SerializeObject(qPayRequest);
+            
             //取得加密內文
             string message = AesCBC_Encrypt.AESEncrypt(jsonData.Replace("null",""), hashId, iv);
-
 
             //產生WebAPIMessage
             BaseRequestModel req = new BaseRequestModel()
             {
                 //Version = _currentVersion,
                 //ShopNo = shopNo,
-                APIService = APIService.OrderCreate,
+                APIService = apiService,
                 Nonce = nonce,
                 Message = message,
                 //利用Request物件, AESKey及Nonce組成Sign值
-                Sign = SignService.GetSign<OrderCreateReqModel>(orderCreateModel, nonce)
+                Sign = SignService.GetSign<OrderCreateReqModel>(qPayRequest, nonce)
             };
+
             try
             {
-                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Request:{1}", req.APIService, req.Message));
+                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Request:{1}", apiService, req.Message));
 
-                //呼叫商業收付Web API
-                var result = await _qPayRepository.CreateApiAsync("Order", req);
+                //try
+                //{
+                //    //呼叫商業收付Web API
+                    var result = await _qPayRepository.CreateApiAsync("Order", req);
+                //}
+                //catch (Exception e)
+                //{
+                //    throw e;
+                //}
 
-                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Response:{1}", req.APIService, result.Message));
+                _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Response:{1}", apiService, result.Message));
                 decodedMsg += AesCBC_Encrypt.DecryptAesCBC(result.Message, hashId, result.Nonce);
 
                 _logger.LogInformation("Response Message:" + decodedMsg);
@@ -99,7 +109,7 @@ namespace Qpay_Core.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message.ToString());
-                //_logger.LogError(null, ex);
+                _logger.LogError("串接API時發生錯誤", ex);
                 throw ex;
             }
         }

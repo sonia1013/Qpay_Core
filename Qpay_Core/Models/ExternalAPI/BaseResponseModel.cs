@@ -2,7 +2,6 @@
 {
     public class BaseResponseModel
     {
-        //public string Status { get; set; }  //S:成功 F:失敗
         /// <summary>
         /// API版本
         /// </summary>
@@ -22,5 +21,6 @@
         public string Sign { get; set; }
 
         public string Message { get; set; } //(交易訊息內文+HashID+IV)=>AES-CBC
+        //public string Status { get; set; }  //S:成功 F:失敗
     }
 }

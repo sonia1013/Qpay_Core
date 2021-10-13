@@ -119,23 +119,29 @@ namespace Qpay_Core.Services.Common
             }
         }
 
-
-        public static byte[] HexToByte(this string hexString)
+        public static byte[] HexToByte(string hex)  //StringToByteArray
         {
-            byte[] output = new byte[hexString.Length / 2];
-            for (int x = 0; x < hexString.Length; x=x+2)
-            {
-                string value = hexString.Substring(x * 2, 2);
-                //dataByteArray[x / 2] = Convert.ToByte(hexString.Substring(x, 2), 16);
-                uint i = Convert.ToByte(value, 16);
-                output[x] = (byte)i;
-            }
-            //for (int i = 0; i < hexString.Length; i = i + 2)
-            //{
-            //    output[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
-            //}
-            return output;
-
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
         }
+        //public static byte[] HexToByte(this string hexString)
+        //{
+        //    byte[] output = new byte[hexString.Length / 2];
+        //    for (int x = 0; x < hexString.Length; x=x+2)
+        //    {
+        //        string value = hexString.Substring(x * 2, 2);
+        //        //dataByteArray[x / 2] = Convert.ToByte(hexString.Substring(x, 2), 16);
+        //        uint i = Convert.ToByte(value, 16);
+        //        output[x] = (byte)i;
+        //    }
+        //    //for (int i = 0; i < hexString.Length; i = i + 2)
+        //    //{
+        //    //    output[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+        //    //}
+        //    return output;
+
+        //}
     }
 }
