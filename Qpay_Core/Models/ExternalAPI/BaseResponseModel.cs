@@ -23,4 +23,15 @@
         public string Message { get; set; } //(交易訊息內文+HashID+IV)=>AES-CBC
         //public string Status { get; set; }  //S:成功 F:失敗
     }
+
+    public class ReturnUrlModel
+    {
+        public string ShopNo { get; set; }
+        public string PayToken { get; set; }
+    }
+
+    public class BackendUrlModel
+    {
+        public string Status { get; set; }
+    }
 }

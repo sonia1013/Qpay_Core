@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,18 +24,35 @@ namespace Qpay_Core.Services.Common
             byte[] input_Key = Encoding.ASCII.GetBytes(key);
             byte[] input_IV = Encoding.ASCII.GetBytes(iv);
             byte[] dataByteArray = Encoding.UTF8.GetBytes(toEncrypt);
-            RijndaelManaged rDel = new RijndaelManaged();
-            rDel.Key = input_Key;
-            rDel.IV = input_IV;
-            rDel.Mode = CipherMode.CBC;
-            rDel.Padding = PaddingMode.Zeros;
-            ICryptoTransform cTransform = rDel.CreateEncryptor();
-            byte[] resultByteArray = cTransform.TransformFinalBlock(dataByteArray, 0, dataByteArray.Length);
-            foreach (byte b in resultByteArray)
+            //RijndaelManaged rDel = new RijndaelManaged();
+            //rDel.Key = input_Key;
+            //rDel.IV = input_IV;
+            //rDel.Mode = CipherMode.CBC;
+            //rDel.Padding = PaddingMode.Zeros;
+            //ICryptoTransform cTransform = rDel.CreateEncryptor();
+            //byte[] resultByteArray = cTransform.TransformFinalBlock(dataByteArray, 0, dataByteArray.Length);
+            //foreach (byte b in resultByteArray)
+            //{
+            //    sb.Append(string.Format("{0:X2}", b));
+            //}
+            //return sb.ToString();
+            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
+            aes.Key = input_Key;
+            aes.IV = input_IV;
+            string encrypt = "";
+            using (MemoryStream ms = new MemoryStream())
+            using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
             {
-                sb.Append(string.Format("{0:X2}", b));
+                cs.Write(dataByteArray, 0, dataByteArray.Length);
+                cs.FlushFinalBlock();
+                //輸出資料
+                foreach (byte b in ms.ToArray())
+                {
+                    sb.AppendFormat("{0:X2}", b);
+                }
+                encrypt = sb.ToString();
             }
-            return sb.ToString();
+            return encrypt;
         }
 
         //public static string EncryptAesCBC(string source, string key, string iv)

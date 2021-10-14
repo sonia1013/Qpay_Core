@@ -24,7 +24,7 @@ namespace Qpay_Core
             {
                 //NLog: catch setup errors
                 logger.Error(exception, "Stopped program because of exception");
-                throw;
+                throw exception;
             }
             finally
             {
@@ -41,11 +41,11 @@ namespace Qpay_Core
                 })
                 .ConfigureLogging(logging =>
                 {
-                    logging.ClearProviders();
-                    //logging.SetMinimumLevel(LogLevel.Debug);
-                    //logging.AddConsole();
-                });
-                //.UseNLog();
+                    logging.ClearProviders();   // removes all providers from LoggerFactory
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.AddConsole();
+                })
+                .UseNLog();
 
     }
 }

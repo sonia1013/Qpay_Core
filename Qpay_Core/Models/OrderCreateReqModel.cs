@@ -13,8 +13,8 @@ namespace Qpay_Core.Models
         public ConvStoreParam ConvStoreParam { get; set; }
         public string PrdtName { get; set; }    //�����b���q�� or �H�Υd�q��
         public string Memo { get; set; }    
-        public string ReturnURL { get; } ="http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
-        public string BackendURL { get; } = "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
+        public string ReturnURL { get; set; } //="http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
+        public string BackendURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
 
 
     }

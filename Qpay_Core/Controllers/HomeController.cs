@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Qpay_Core.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -20,7 +21,7 @@ namespace Qpay_Core.Controllers
 
         public IActionResult Index()
         {
-            _logger.LogInformation("Hello, this is the index!");
+            _logger.LogInformation("Welcome!");
             return View();
         }
 

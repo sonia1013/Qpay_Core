@@ -15,10 +15,12 @@ using System.Text;
 using Qpay_Core.Models.ExternalAPI;
 using Qpay_Core.Repository.Interfaces;
 using Qpay_Core.Models;
+using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Qpay_Core.Repository
 {
-    public class QpayRepository:IQpayRepository
+    public class QpayRepository : IQpayRepository
     {
         private readonly ILogger<QpayRepository> _logger;
         private readonly IHttpClientFactory _clientFactory;
@@ -55,17 +57,18 @@ namespace Qpay_Core.Repository
 
         public async Task<BaseResponseModel> CreateApiAsync(string route, BaseRequestModel request)
         {
-            var result = new BaseResponseModel();
+            BaseResponseModel result = null;
             HttpClient httpClient = _clientFactory.CreateClient("funBizApi");
             httpClient.BaseAddress = new Uri("https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/");
             var contentPost = new StringContent(
                 JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-
+            HttpResponseMessage response;
             try
             {
                 //HttpResponseMessage response = await _clientFactory.CreateClient("shortUrls").PostAsync();
-                using (HttpResponseMessage response = await httpClient.PostAsync(route, contentPost))
+                using (response = await httpClient.PostAsync(route, contentPost))
                 {
+                    _logger.LogWarning(response.ToString());
                     if (response.IsSuccessStatusCode)
                     {
                         string resultStr = await response.Content.ReadAsStringAsync();
@@ -73,14 +76,16 @@ namespace Qpay_Core.Repository
                     }
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        _logger.LogError($"Get nonce failed. StatusCode , HttpStatusCode:{response.StatusCode}, result:{result}");
+                        _logger.LogError("Get Qpay {0} service failed. StatusCode , HttpStatusCode:{1}, result:{2}", request.APIService.ToString(), response.StatusCode, response.ToString());
+                        throw new WebException("呼叫API錯誤"+response.ToString());
                     }
                 }
             }
             catch (Exception ex)
-            {
+            { 
                 throw (ex);
             }
+            result.Message += "呼叫API錯誤" + response.ToString();
             return result;
         }
     }
