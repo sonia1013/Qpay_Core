@@ -55,9 +55,9 @@ namespace Qpay_Core.Repository
         }
 
 
-        public async Task<BaseResponseModel> CreateApiAsync(string route, BaseRequestModel request)
+        public async Task<T> CreateApiAsync<T>(string route, BaseRequestModel request) where T:new()
         {
-            BaseResponseModel result = null;
+            T result;
             HttpClient httpClient = _clientFactory.CreateClient("funBizApi");
             httpClient.BaseAddress = new Uri("https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/");
             var contentPost = new StringContent(
@@ -72,7 +72,8 @@ namespace Qpay_Core.Repository
                     if (response.IsSuccessStatusCode)
                     {
                         string resultStr = await response.Content.ReadAsStringAsync();
-                        result = JsonConvert.DeserializeObject<BaseResponseModel>(resultStr);
+                        result = JsonConvert.DeserializeObject<T>(resultStr);
+                        return result;
                     }
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -85,8 +86,8 @@ namespace Qpay_Core.Repository
             { 
                 throw (ex);
             }
-            result.Message += "呼叫API錯誤" + response.ToString();
-            return result;
+            // Message += "呼叫API錯誤" + response.Content.ReadAsStringAsync().Result.ToString();
+
         }
     }
 

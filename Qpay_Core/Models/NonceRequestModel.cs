@@ -2,13 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Qpay_Core.Models
 {
     public class NonceRequestModel
     {
+        [DataMember]
         public string ShopNo { get; set; }
+
+        //public NonceReq(string shopNo)
+        //{
+        //    ShopNo = shopNo;
+        //}
     }
 
     public class NonceResModel

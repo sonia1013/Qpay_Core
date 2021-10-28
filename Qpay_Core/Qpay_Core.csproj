@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="Models\RequestModel\" />
     <Folder Include="Models\ResponseModel\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
 
 </Project>

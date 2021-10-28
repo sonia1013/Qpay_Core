@@ -34,7 +34,7 @@ namespace Qpay_Core.Controllers
         [HttpPost("CreateOrder")]
         public async Task<ActionResult<BaseResponseModel>> CreateOrderAsync(OrderCreateReq orderCreate)
         {
-            _logger.LogInformation("Log message in the Index() method");
+            _logger.LogInformation($"嘗試建立訂單:{orderCreate.OrderNo}");
             try
             {
                 BaseResponseModel result = await _orderService.OrderCreate(orderCreate);

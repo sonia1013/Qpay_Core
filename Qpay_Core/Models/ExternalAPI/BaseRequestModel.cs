@@ -11,20 +11,25 @@ namespace Qpay_Core.Models.ExternalAPI
         /// <summary>
         /// API版本
         /// </summary>
+        [DataMember]
         public string Version { get; } = "1.0.0";
         /// <summary>
         /// 商家註冊編號，例如AA0001_001
         /// </summary>
+        [DataMember]
         public string ShopNo { get; set; } //= "NA0249_001";
         public APIService APIService { get; set; }
         /// <summary>
         /// 一次性數值
         /// </summary>
+        [DataMember]
         public string Nonce { get; set; }
         /// <summary>
         /// 簽章值
         /// </summary>
+        [DataMember]
         public string Sign { get; set; }
+        [DataMember]
         public string Message { get; set; } //(交易訊息內文+HashID+IV)=>AES-CBC
     }
 

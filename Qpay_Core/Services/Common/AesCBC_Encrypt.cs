@@ -24,12 +24,6 @@ namespace Qpay_Core.Services.Common
             byte[] input_Key = Encoding.ASCII.GetBytes(key);
             byte[] input_IV = Encoding.ASCII.GetBytes(iv);
             byte[] dataByteArray = Encoding.UTF8.GetBytes(toEncrypt);
-            //RijndaelManaged rDel = new RijndaelManaged();
-            //rDel.Key = input_Key;
-            //rDel.IV = input_IV;
-            //rDel.Mode = CipherMode.CBC;
-            //rDel.Padding = PaddingMode.Zeros;
-            //ICryptoTransform cTransform = rDel.CreateEncryptor();
             //byte[] resultByteArray = cTransform.TransformFinalBlock(dataByteArray, 0, dataByteArray.Length);
             //foreach (byte b in resultByteArray)
             //{
@@ -55,53 +49,85 @@ namespace Qpay_Core.Services.Common
             return encrypt;
         }
 
-        //public static string EncryptAesCBC(string source, string key, string iv)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
-        //    byte[] keyB = Encoding.ASCII.GetBytes(key);
-        //    byte[] ivB = Encoding.ASCII.GetBytes(iv);
-        //    byte[] dataByteArray = Encoding.UTF8.GetBytes(source);
+        public static string EncryptAesCBC(string source, string key, string iv)
+        {
+            StringBuilder sb = new StringBuilder();
+            byte[] keyB = Encoding.ASCII.GetBytes(key);
+            byte[] ivB = Encoding.ASCII.GetBytes(iv);
+            byte[] dataByteArray = Encoding.UTF8.GetBytes(source);
+            string encrypt = "";
 
-        //    aes.Key = keyB;
-        //    aes.IV = ivB;
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+            {
+                aes.Key = keyB;
+                aes.IV = ivB;
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                using (MemoryStream ms = new MemoryStream())
+                using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                {
+                    //using (StreamWriter sw = new StreamWriter(cs))
+                    //{
+                    //    sw.Write(dataByteArray, 0, dataByteArray.Length);
+                    //    sw.Flush();
 
-        //    string encrypt = "";
-        //    using (MemoryStream ms = new MemoryStream())
-        //    using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
-        //    {
-        //        cs.Write(dataByteArray, 0, dataByteArray.Length);
-        //        cs.FlushFinalBlock();
-        //        //輸出資料
-        //        foreach (byte b in ms.ToArray())
-        //        {
-        //            sb.AppendFormat("{0:X2}", b);
-        //        }
-        //        encrypt = sb.ToString();
-        //    }
-        //    return encrypt;
-        //}
+                    //}
+                    //encrypt = ms.ToArray();
+                    cs.Write(dataByteArray, 0, dataByteArray.Length);
+                    cs.FlushFinalBlock();
+                    //輸出資料
+                    foreach (byte b in ms.ToArray())
+                    {
+                        sb.AppendFormat("{0:X2}", b);
+                    }
+                    encrypt = sb.ToString();
+                }
+            return encrypt;
+            }
+        }
 
 
-        //public static string AESDecrypt(string HexToDecrypt, string key, string iv)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    byte[] input_Key = UTF8Encoding.UTF8.GetBytes(key);
-        //    byte[] input_IV = UTF8Encoding.UTF8.GetBytes(iv);
-        //    byte[] toEncryptArray = Convert.FromBase64String(HexToDecrypt);
-        //    RijndaelManaged rDel = new RijndaelManaged();
-        //    rDel.Key = input_Key;
-        //    rDel.IV = input_IV;
-        //    rDel.Mode = CipherMode.CBC;
-        //    rDel.Padding = PaddingMode.Zeros;
-        //    ICryptoTransform cTransform = rDel.CreateDecryptor();
-        //    byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-        //    foreach (byte b in resultArray)
-        //    {
-        //        sb.AppendFormat("{0:X2}", b);
-        //    }
-        //    return sb.ToString();
-        //}
+        static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        {
+            // Check arguments.
+            if (cipherText == null || cipherText.Length <= 0)
+                throw new ArgumentNullException("cipherText");
+            if (Key == null || Key.Length <= 0)
+                throw new ArgumentNullException("Key");
+            if (IV == null || IV.Length <= 0)
+                throw new ArgumentNullException("IV");
+
+            // Declare the string used to hold
+            // the decrypted text.
+            string plaintext = null;
+
+            // Create an AesCryptoServiceProvider object
+            // with the specified key and IV.
+            using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
+            {
+                aesAlg.Key = Key;
+                aesAlg.IV = IV;
+
+                // Create a decryptor to perform the stream transform.
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                // Create the streams used for decryption.
+                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            return plaintext;
+        }
 
         /// <summary>
         /// AES CBC解密
