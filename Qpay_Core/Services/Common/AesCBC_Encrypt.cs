@@ -20,10 +20,11 @@ namespace Qpay_Core.Services.Common
         /// <param name="iv"></param>
         public static string AESEncrypt(string toEncrypt, string key, string iv)
         {
+            string inputStr = toEncrypt.Replace(@"\", " ");
             StringBuilder sb = new StringBuilder();
             byte[] input_Key = Encoding.ASCII.GetBytes(key);
             byte[] input_IV = Encoding.ASCII.GetBytes(iv);
-            byte[] dataByteArray = Encoding.UTF8.GetBytes(toEncrypt);
+            byte[] dataByteArray = Encoding.UTF8.GetBytes(inputStr);
             //byte[] resultByteArray = cTransform.TransformFinalBlock(dataByteArray, 0, dataByteArray.Length);
             //foreach (byte b in resultByteArray)
             //{

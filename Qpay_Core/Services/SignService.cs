@@ -19,7 +19,7 @@ namespace Qpay_Core.Services
     public static class SignService
     {
 
-        public static string GetSign<T>(this T inputObj,string nonce) where T : OrderCreateReqModel
+        public static string GetSign<T>(this T inputObj,string nonce)
         {
             //計算Sign
             //string json = Newtonsoft.Json.JsonConvert.SerializeObject(inputObj);
@@ -35,7 +35,7 @@ namespace Qpay_Core.Services
             return SHA256_Hash.GetSHA256Hash(sign).ToUpper();
         }
 
-        //internal static string GetSign<TReq>(string nonce, TReq request) where TReq : BaseRequestModel
+        //internal static string GetSign<TReq>(string nonce, TReq request) where TReq : BaseApiMessage
         //{
         //    string data = SignService.SerializeToJson(request);
         //    string hashId = GetHashID();

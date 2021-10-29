@@ -41,9 +41,11 @@ namespace Qpay_Core
             services.AddControllers();
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddHttpClient();
-            //funBizApi
-            //https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/
+            services.AddHttpClient("QPayWebAPIUrl",client=> {
+                client.BaseAddress = new Uri("https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
 
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IQpayRepository, QpayRepository>();

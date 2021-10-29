@@ -10,7 +10,7 @@ namespace Qpay_Core.Services.Interfaces
     public interface IOrderService
     {
         //public Task<BaseResponseModel> GetQPayResponse(OrderCreateReqModel orderCreateReq);
-        //public Task<TReq> GetQPayResponse<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel;
+        //public Task<TReq> GetQPayResponse<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseApiMessage;
 
         public Task<OrderCreateRes> OrderCreate(OrderCreateReq req);
         public Task<OrderPayQueryRes> OrderPayQuery(OrderPayQueryReq req);

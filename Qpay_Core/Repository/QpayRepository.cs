@@ -4,12 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Qpay_Core.Services;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
 using System.Security.Policy;
 using System.Text;
 using Qpay_Core.Models.ExternalAPI;
@@ -34,9 +32,9 @@ namespace Qpay_Core.Repository
         public async Task<string> CreateNonceAsync(NonceRequestModel nonceRequest)
         {
             string result = string.Empty;
-            // 建立 HttpClient 實例
-            var httpClient = _clientFactory.CreateClient("funBizApi");
-            httpClient.BaseAddress = new Uri("https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/");
+
+            var httpClient = _clientFactory.CreateClient("QPayWebAPIUrl");
+            
             var contentPost = new StringContent(
                 JsonConvert.SerializeObject(nonceRequest), Encoding.UTF8, "application/json");
 
@@ -55,14 +53,15 @@ namespace Qpay_Core.Repository
         }
 
 
-        public async Task<T> CreateApiAsync<T>(string route, BaseRequestModel request) where T:new()
+        public async Task<T> CreateApiAsync<T>(string route, BaseApiMessage request) where T:new()
         {
-            T result;
-            HttpClient httpClient = _clientFactory.CreateClient("funBizApi");
-            httpClient.BaseAddress = new Uri("https://apisbx.sinopac.com/funBIZ/QPay.WebAPI/api/");
+            //BaseResponseModel result=null;
+            HttpClient httpClient = _clientFactory.CreateClient("QPayWebAPIUrl");
+
             var contentPost = new StringContent(
                 JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             HttpResponseMessage response;
+            T result;
             try
             {
                 //HttpResponseMessage response = await _clientFactory.CreateClient("shortUrls").PostAsync();
@@ -72,22 +71,26 @@ namespace Qpay_Core.Repository
                     if (response.IsSuccessStatusCode)
                     {
                         string resultStr = await response.Content.ReadAsStringAsync();
-                        result = JsonConvert.DeserializeObject<T>(resultStr);
+                        result = (T)JsonConvert.DeserializeObject(resultStr);
                         return result;
                     }
-                    if (response.StatusCode != HttpStatusCode.OK)
+                    if(response.StatusCode != HttpStatusCode.OK)
                     {
-                        _logger.LogError("Get Qpay {0} service failed. StatusCode , HttpStatusCode:{1}, result:{2}", request.APIService.ToString(), response.StatusCode, response.ToString());
-                        throw new WebException("呼叫API錯誤"+response.ToString());
+                        _logger.LogError("Get Qpay {0} service failed. StatusCode , HttpStatusCode:{1}, result:{2}", request.APIService.ToString(), response.StatusCode, response.Content);
+                        throw new WebException("CreateApiAsync server error" + response.Headers.ToString());
                     }
+                    else
+                    {
+                        throw new Exception("呼叫CreateApiAsync錯誤"+ response.ToString());
+                    }
+
                 }
             }
             catch (Exception ex)
-            { 
-                throw (ex);
+            {
+                throw new Exception("CreateApiAsync failed: "+ ex.Message + "request:" + request.ToString());
             }
             // Message += "呼叫API錯誤" + response.Content.ReadAsStringAsync().Result.ToString();
-
         }
     }
 

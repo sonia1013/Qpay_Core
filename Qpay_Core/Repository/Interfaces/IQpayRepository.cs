@@ -10,7 +10,9 @@ namespace Qpay_Core.Repository.Interfaces
 {
     public interface IQpayRepository
     {
-        public Task<BaseResponseModel> CreateApiAsync(string route, BaseRequestModel request);
+        //public Task<T> CreateApiAsync(string route, BaseApiMessage request);
+
+        public Task<T> CreateApiAsync<T>(string route, BaseApiMessage request) where T : new();
 
         public Task<string> CreateNonceAsync(NonceRequestModel nonceRequest);
     }

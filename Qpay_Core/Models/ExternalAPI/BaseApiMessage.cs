@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Qpay_Core.Models.ExternalAPI
 {
-    public class BaseRequestModel
+    public class BaseApiMessage
     {
         /// <summary>
         /// API版本
@@ -33,9 +33,13 @@ namespace Qpay_Core.Models.ExternalAPI
         public string Message { get; set; } //(交易訊息內文+HashID+IV)=>AES-CBC
     }
 
-    public class OrderPayQueryReq:BaseRequestModel
+    public class BaseReqModel
     {
-        //public string ShopNo { get; set; }
+        public string ShopNo { get; set; }
+    }
+
+    public class OrderPayQueryReq:BaseReqModel
+    {
         public string PayToken { get; set; }
     }
 
@@ -48,29 +52,29 @@ namespace Qpay_Core.Models.ExternalAPI
         public string Description { get; set; }
     }
 
-    public class OrderCreateReq : BaseRequestModel
-    {
-        public string OrderNo { get; set; } //"A202109170001"
-        public decimal Amount { get; set; } //1314
-        public string CurrencyID { get; set; }  //TWD
-        public string PayType { get; set; } //A:�����b��(AtmPayNo.WebAtmURL.OtpURL����) //C:�H�Υd(CardPayURL����)
-        public ATMParam ATMParam { get; set; }      //PayType==A Required
-        public CardParam CardParam { get; set; }    //PayType==C Required
-        public ConvStoreParam ConvStoreParam { get; set; }
-        public string PrdtName { get; set; }    //�����b���q�� or �H�Υd�q��
-        public string Memo { get; set; }
-        public string ReturnURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
-        public string BackendURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
+    //public class OrderCreateReq : BaseApiMessage
+    //{
+    //    public string OrderNo { get; set; } //"A202109170001"
+    //    public decimal Amount { get; set; } //1314
+    //    public string CurrencyID { get; set; }  //TWD
+    //    public string PayType { get; set; } //A:�����b��(AtmPayNo.WebAtmURL.OtpURL����) //C:�H�Υd(CardPayURL����)
+    //    public ATMParam ATMParam { get; set; }      //PayType==A Required
+    //    public CardParam CardParam { get; set; }    //PayType==C Required
+    //    public ConvStoreParam ConvStoreParam { get; set; }
+    //    public string PrdtName { get; set; }    //�����b���q�� or �H�Υd�q��
+    //    public string Memo { get; set; }
+    //    public string ReturnURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
+    //    public string BackendURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
 
-    }
+    //}
 
-    public class OrderCreateRes : BaseResponseModel
-    {
-        public string TSNo { get; set; }
-        public string Status { get; set; }
-    }
+    //public class OrderCreateRes : BaseResponseModel
+    //{
+    //    public string TSNo { get; set; }
+    //    public string Status { get; set; }
+    //}
 
-    public class OrderQueryReq : BaseRequestModel
+    public class OrderQueryReq : BaseReqModel
     {
         public string PayToken { get; set; }
     }

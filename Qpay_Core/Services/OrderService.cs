@@ -32,26 +32,26 @@ namespace Qpay_Core.Services
         }
 
         //public async Task<BaseResponseModel> GetQPayResponse(OrderCreateReqModel request)
-        private async Task<TResult> GetQPayResponse<TReq, TResult>(TReq request, APIService apiService) where TReq : BaseRequestModel    //其實主要是傳入ShopNo
+        private async Task<TResult> GetQPayResponse<TReq, TResult>(TReq apirequest, APIService apiService) where TReq : BaseReqModel    //其實主要是傳入ShopNo
         {
-            string shopNo = request.ShopNo;
-            DateTime dateTime = DateTime.Now;
-            string timeStr = dateTime.ToString("yyyymmddhhmm");
+            string shopNo = apirequest.ShopNo;
+            //DateTime dateTime = DateTime.Now;
+            //string timeStr = dateTime.ToString("yyyymmddhhmm");
             string decodedMsg = "";
 
-            var qPayRequest = new OrderCreateReqModel()
-            {
-                ShopNo = shopNo,
-                OrderNo = "C" + timeStr, //Get Set 其實改成為唯讀欄位+時間戳記就好了
-                //Amount = request,
-                CurrencyID = "TWD",
-                PayType = "A",
-                //ATMParam = new ATMParam() { ExpireDate = "20211108" },
-                CardParam=new CardParam() {AutoBilling="Y" },
-                PrdtName = "baby kimchi",
-                ReturnURL="https://localhost:5001/home/return",
-                BackendURL="https://localhost:5001/home/success"
-            };
+            //var qPayRequest = new OrderCreateReqModel()
+            //{
+            //    ShopNo = shopNo,
+            //    OrderNo = "A" + timeStr, //Get Set 其實改成為唯讀欄位+時間戳記就好了
+            //    Amount = apirequest.,
+            //    CurrencyID = "TWD",
+            //    PayType = "A",
+            //    //ATMParam = new ATMParam() { ExpireDate = "20211108" },
+            //    CardParam=new CardParam() {AutoBilling="Y" },
+            //    PrdtName = "baby kimchi",
+            //    ReturnURL="https://localhost:5001/checkout/return",
+            //    BackendURL="https://localhost:5001/home/success"
+            //};
 
             //取得nonce值
             NonceRequestModel nonceReq = new NonceRequestModel() { ShopNo = shopNo };
@@ -74,14 +74,14 @@ namespace Qpay_Core.Services
             //計算IV
             string iv = QPayCommon.CalculateIVbyNonce(nonce);
 
-            string jsonData = QPayCommon.SerializeToJson(qPayRequest);
+            string jsonData = QPayCommon.SerializeToJson(apirequest);
             _logger.LogInformation("加密內文="+JsonConvert.SerializeObject(jsonData));
             
             //取得加密內文
             string message = AesCBC_Encrypt.AESEncrypt(jsonData, hashId, iv);
 
             //產生WebAPIMessage
-            BaseRequestModel req = new BaseRequestModel()
+            BaseApiMessage req = new BaseApiMessage()
             {
                 //Version = _currentVersion,
                 ShopNo = shopNo,
@@ -89,7 +89,7 @@ namespace Qpay_Core.Services
                 Nonce = nonce,
                 Message = message,
                 //利用Request物件, AESKey及Nonce組成Sign值
-                Sign = SignService.GetSign<OrderCreateReqModel>(qPayRequest, nonce)
+                Sign = SignService.GetSign(apirequest, nonce)
             };
             
             try
@@ -97,7 +97,7 @@ namespace Qpay_Core.Services
                 _logger.LogWarning(string.Format("呼叫商業收付API Order/{0} , Request:{1}", apiService, QPayCommon.SerializeToJson(req)));
 
                 //呼叫商業收付Web API
-                BaseResponseModel result = await _qPayRepository.CreateApiAsync("Order", req);
+                BaseResponseModel result = await _qPayRepository.CreateApiAsync<BaseResponseModel>("Order", req);
                 
                 
                 while (result.Message != "")

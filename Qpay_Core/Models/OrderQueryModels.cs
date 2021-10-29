@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Qpay_Core.Models
 {
-    public class OrderQueryModel
+    public class OrderQueryModels
     {
     }
 }

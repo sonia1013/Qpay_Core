@@ -1,20 +1,46 @@
+using Qpay_Core.Models.ExternalAPI;
 using System;
+using System.Runtime.Serialization;
+
 namespace Qpay_Core.Models
 {
-	public class OrderCreateReqModel
+	public class OrderCreateReq:BaseReqModel
     {
-        public string ShopNo { get; set; }  //"NA0249_001"
-        public string OrderNo { get; set; } //"A202109170001"
+        //public string ShopNo { get; set; }  //"NA0249_001"
+        [DataMember]
+        public string OrderNo { get; } = "A" + DateTime.Now.ToString("yyyymmddhhmm");
+        [DataMember]
         public int Amount { get; set; } //1314
+        [DataMember]
         public string CurrencyID { get; set; }  //TWD
+        [DataMember]
         public string PayType { get; set; } //A:�����b��(AtmPayNo.WebAtmURL.OtpURL����) //C:�H�Υd(CardPayURL����)
+        [DataMember]
         public ATMParam ATMParam { get; set; }      //PayType==A Required
+        [DataMember]
         public CardParam CardParam { get; set; }    //PayType==C Required
-        public ConvStoreParam ConvStoreParam { get; set; }
+        //[DataMember]
+        //public ConvStoreParam ConvStoreParam { get; set; }
+        [DataMember]
         public string PrdtName { get; set; }    //�����b���q�� or �H�Υd�q��
-        public string Memo { get; set; }    
-        public string ReturnURL { get; set; } //="http://10.11.22.113:8803/QPay.ApiClient/Store/Return";
-        public string BackendURL { get; set; } //= "http://10.11.22.113:8803/QPay.ApiClient/AutoPush/PushSuccess";
+        [DataMember]
+        public string Memo { get; set; }
+        /// <summary>
+        /// 付款完成轉入URL
+        /// </summary>
+        /// <remarks>
+        /// 不可有單引號、雙引號、百分比, 最大長度255
+        /// </remarks>
+        [DataMember]
+        public string ReturnURL { get; } = "https://localhost:5001/checkout/return";
+        /// <summary>
+        /// 付款完成背端通知URL
+        /// </summary>
+        /// <remarks>
+        /// 不可有單引號、雙引號、百分比, 最大長度255
+        /// </remarks>
+        [DataMember]
+        public string BackendURL { get; } = "https://localhost:5001/home/success";
 
 
     }
@@ -35,17 +61,17 @@ namespace Qpay_Core.Models
         //public string CardPayURL { get; set; }
 
         /// <summary>
-        /// �۰ʽд�(�H�Υd)
+        /// 自動請款(信用卡)
         /// </summary>
         public string AutoBilling { get; set; }
 
         /// <summary>
-        /// �w�p�۰ʽдڤѼ�
+        /// 預計自動請款天數
         /// </summary>
         public int? ExpBillingDays { get; set; }
 
         /// <summary>
-        /// �q�榳�Įɶ�(����)
+        /// 訂單有效時間(分鐘)
         /// </summary>
         public int? ExpMinutes { get; set; }
 
@@ -70,7 +96,7 @@ namespace Qpay_Core.Models
         //����
     }
 
-    public class OrderCreateResModel:OrderCreateReqModel
+    public class OrderCreateRes:OrderCreateReq
     {
         public string TSNo { get; set; }
         public string Status { get; set; }

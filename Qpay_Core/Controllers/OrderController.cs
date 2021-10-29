@@ -32,12 +32,13 @@ namespace Qpay_Core.Controllers
         //}
 
         [HttpPost("CreateOrder")]
-        public async Task<ActionResult<BaseResponseModel>> CreateOrderAsync(OrderCreateReq orderCreate)
+        public async Task<ActionResult<OrderCreateRes>> CreateOrderAsync(OrderCreateReq orderCreate)
         {
             _logger.LogInformation($"嘗試建立訂單:{orderCreate.OrderNo}");
             try
             {
-                BaseResponseModel result = await _orderService.OrderCreate(orderCreate);
+                OrderCreateRes result = await _orderService.OrderCreate(orderCreate);
+                RedirectToAction("Home", "PushSuccess");
                 return result;
             }
             catch(Exception e)
@@ -45,6 +46,7 @@ namespace Qpay_Core.Controllers
                 _logger.LogError($"建立訂單失敗{e.Message}");
                 throw e;
             }
+            //Redirect("Home/Index");
         }
 
 

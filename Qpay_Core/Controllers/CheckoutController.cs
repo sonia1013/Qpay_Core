@@ -27,7 +27,7 @@ namespace Qpay_Core.Controllers
 
         }
         
-        public IActionResult Index()
+        public IActionResult OrderDetail()
         {
             return View();
         } 
@@ -37,6 +37,9 @@ namespace Qpay_Core.Controllers
             return View();
         } 
 
-
+        public IActionResult Return()
+        {
+            return View();
+        }
     }
 }
